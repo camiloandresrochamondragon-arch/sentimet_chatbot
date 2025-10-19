@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot de Sentimientos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="usuario-info">
+        {% if usuario %}
+            <p>👤 {{ usuario }}</p>
+            <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
+        {% endif %}
+    </div>
+
+    <div class="contenedor-principal">
+        <h1 class="bienvenida">💬 Chatbot de Sentimientos</h1>
+        <p class="intro">Aquí estará el menú para acceder al chatbot que analiza tus emociones y adapta la experiencia educativa.</p>
+
+        <!-- Puedes agregar aquí el formulario o botón para iniciar el chat -->
+        <div class="menu-chat">
+            <a href="#" class="boton-chat">Iniciar conversación</a>
+            <!-- O reemplaza "#" por la ruta real si tienes un endpoint como /procesar_chat -->
+        </div>
+    </div>
+</body>
+</html>

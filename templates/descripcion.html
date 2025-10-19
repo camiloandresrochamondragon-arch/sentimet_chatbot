@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>¿De qué trata el proyecto?</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="usuario-info">
+        {% if usuario %}
+            <p>👤 {{ usuario }}</p>
+        {% endif %}
+    </div>
+
+    <div class="contenedor-principal">
+        <h1>🧠 ¿De qué trata el proyecto?</h1>
+        <p>Este proyecto se basa en una plataforma que analiza las emociones y responde con contenido adaptado. Se integran medios interactivos como videos, textos y audios para mejorar la experiencia de aprendizaje.</p>
+    </div>
+</body>
+</html>

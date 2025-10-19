@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Introducción</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="usuario-info">
+        {% if usuario %}
+            <p>👤 {{ usuario }}</p>
+            <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
+        {% endif %}
+    </div>
+
+    <div class="contenedor-principal">
+        <h1>📘 Introducción</h1>
+        <p>Esta plataforma ofrece una experiencia educativa personalizada mediante el análisis de sentimientos en tiempo real.</p>
+    </div>
+</body>
+</html>

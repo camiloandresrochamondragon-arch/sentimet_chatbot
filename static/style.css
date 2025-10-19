@@ -1,0 +1,169 @@
+/* Estilo base */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f0f0f;
+    margin: 0;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor del formulario */
+form {
+    background-color: #1a1a1a;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #00ffff;
+    width: 400px;
+    text-align: center;
+}
+
+/* Título principal */
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+
+/*h1 personalizado para login */
+h1.bienvenida {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #00ffff;
+    text-shadow: 0 0 15px #00ffff;
+}
+
+h1.bienvenida {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #00ffff;
+    text-shadow: 0 0 15px #00ffff;
+}
+
+/* Etiquetas */
+label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* Campos de entrada */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    background-color: #0f0f0f;
+    color: #ffffff;
+    box-shadow: 0 0 10px #00ffff;
+    outline: none;
+    font-size: 1em;
+}
+
+input::placeholder {
+    color: #aaaaaa;
+}
+
+/* Botón */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #00ffff;
+    color: #0f0f0f;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00ffff;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #00cccc;
+}
+
+/* Enlaces */
+p {
+    margin-top: 20px;
+    color: #ffffff;
+}
+
+a {
+    color: #00ffff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #00cccc;
+}
+
+/* Flash messages */
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.flash-messages li {
+    background-color: #00ffff;
+    color: #0f0f0f;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #00ffff;
+    font-weight: bold;
+}
+h1.bienvenida {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #00ffff;
+    text-shadow: 0 0 15px #00ffff;
+}
+
+.menu-secciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.menu-secciones a {
+    background-color: #121212;
+    color: #00ff99;
+    padding: 15px;
+    border: 2px solid #00ff99;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 0 10px #00ff99;
+}
+
+.menu-secciones a:hover {
+    background-color: #00ff99;
+    color: #0f0f0f;
+    box-shadow: 0 0 20px #00ff99;
+}
+.usuario-info {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    background-color: transparent;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    color: #00ffff;
+    z-index: 1000;
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ffff;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Objetivos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="usuario-info">
+        {% if usuario %}
+            <p>👤 {{ usuario }}</p>
+        {% endif %}
+    </div>
+
+    <div class="contenedor-principal">
+        <h1>🎯 Objetivos</h1>
+        <ul>
+            <li>Detectar emociones usando Machine Learning</li>
+            <li>Adaptar contenido educativo según emociones</li>
+            <li>Mejorar la experiencia en el reto TCU</li>
+        </ul>
+    </div>
+</body>
+</html>
