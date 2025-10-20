@@ -1,17 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import mysql.connector
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
 
-# Conexión a MySQL
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="chatbot"
-)
-cursor = db.cursor(dictionary=True)
+# Conexión a SQLite
+db = sqlite3.connect('chatbot.db', check_same_thread=False)
+cursor = db.cursor()
+
+# Crear tabla si no existe
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL,
+        password TEXT NOT NULL
+    )
+''')
+db.commit()
 
 @app.route('/')
 def home():
@@ -23,7 +29,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
         user = cursor.fetchone()
 
         if user:
@@ -43,14 +49,14 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
-        cursor.execute("SELECT * FROM users WHERE username = %s OR email = %s", (username, email))
+        cursor.execute("SELECT * FROM users WHERE username = ? OR email = ?", (username, email))
         existing_user = cursor.fetchone()
 
         if existing_user:
             flash("⚠️ El usuario o correo ya está registrado. Intenta con otros datos.")
             return redirect(url_for('register'))
 
-        cursor.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
+        cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
                        (username, email, password))
         db.commit()
         flash("🎈 ¡Registro exitoso! Ahora puedes iniciar sesión.")
@@ -107,5 +113,6 @@ def descripcion():
     else:
         flash("⚠️ Debes iniciar sesión para acceder a esta sección.")
         return redirect(url_for('login'))
+
 if __name__ == '__main__':
     app.run(debug=True)
