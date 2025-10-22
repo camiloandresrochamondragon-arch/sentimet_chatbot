@@ -9,12 +9,14 @@ app.secret_key = 'tu_clave_secreta'
 app.static_folder = 'static'
 app.template_folder = 'templates'
 
-# Conexión a MySQL en XAMPP
+# Conexión a MySQL en XAMPP (local)
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",  # Si configuraste una contraseña en XAMPP, colócala aquí
-    database="chatbot"  # ✅ Nombre corregido
+    host=os.environ.get("DB_HOST") or "localhost",
+    user=os.environ.get("DB_USER") or "root",
+    password=os.environ.get("DB_PASSWORD") or "",
+    database=os.environ.get("DB_NAME") or "chatbot",
+    port=3306
+    # ❌ ssl_disabled eliminado: no se usa en XAMPP local
 )
 cursor = db.cursor(dictionary=True)
 
