@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Entendimiento del negocio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="usuario-info">
+    {% if usuario %}
+      <p>👤 {{ usuario }}</p>
+      <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
+    {% endif %}
+  </div>
+
+  <div class="marco-externo">
+    <div class="marco-interno">
+      <h2>🔍 Entendimiento del negocio</h2>
+      <p>Esta sección busca comprender el problema desde una perspectiva estratégica y humana. Es el punto de partida de todo proyecto de análisis emocional.</p>
+
+      <h3>🎯 Objetivos clave</h3>
+      <ul>
+        <li>Identificar el problema que se quiere resolver</li>
+        <li>Definir los objetivos del proyecto</li>
+        <li>Reconocer los actores involucrados</li>
+        <li>Entender el impacto emocional y social del problema</li>
+      </ul>
+
+      <h3>💡 Preguntas guía</h3>
+      <ul>
+        <li>¿Qué queremos lograr con este proyecto?</li>
+        <li>¿Cómo se mide el éxito?</li>
+        <li>¿Qué emociones están implicadas en el problema?</li>
+      </ul>
+
+      <p>Esta fase permite conectar los datos con el propósito humano, asegurando que el análisis tenga sentido y valor real.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,23 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import sqlite3
+import mysql.connector
+import os
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
 
-# Conexión a SQLite
-db = sqlite3.connect('chatbot.db', check_same_thread=False)
-cursor = db.cursor()
+# Configuración para servir archivos estáticos
+app.static_folder = 'static'
+app.template_folder = 'templates'
 
-# Crear tabla si no existe
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        email TEXT NOT NULL,
-        password TEXT NOT NULL
-    )
-''')
-db.commit()
+# Conexión a MySQL en XAMPP
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",  # Si configuraste una contraseña en XAMPP, colócala aquí
+    database="chatbot"  # ✅ Nombre corregido
+)
+cursor = db.cursor(dictionary=True)
 
 @app.route('/')
 def home():
@@ -29,7 +28,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
         user = cursor.fetchone()
 
         if user:
@@ -49,14 +48,14 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
-        cursor.execute("SELECT * FROM users WHERE username = ? OR email = ?", (username, email))
+        cursor.execute("SELECT * FROM users WHERE username = %s OR email = %s", (username, email))
         existing_user = cursor.fetchone()
 
         if existing_user:
             flash("⚠️ El usuario o correo ya está registrado. Intenta con otros datos.")
             return redirect(url_for('register'))
 
-        cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+        cursor.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
                        (username, email, password))
         db.commit()
         flash("🎈 ¡Registro exitoso! Ahora puedes iniciar sesión.")
@@ -85,6 +84,7 @@ def chat():
 @app.route('/logout')
 def logout():
     session.pop('usuario', None)
+    flash("👋 Has cerrado sesión correctamente.")
     return redirect(url_for('login'))
 
 @app.route('/introduccion')
@@ -110,6 +110,24 @@ def descripcion():
     if 'usuario' in session:
         usuario = session['usuario']
         return render_template('descripcion.html', usuario=usuario)
+    else:
+        flash("⚠️ Debes iniciar sesión para acceder a esta sección.")
+        return redirect(url_for('login'))
+
+@app.route('/entendimiento-negocio')
+def entendimiento_negocio():
+    if 'usuario' in session:
+        usuario = session['usuario']
+        return render_template('entendimiento_negocio.html', usuario=usuario)
+    else:
+        flash("⚠️ Debes iniciar sesión para acceder a esta sección.")
+        return redirect(url_for('login'))
+
+@app.route('/ingenieria-datos')
+def ingenieria_datos():
+    if 'usuario' in session:
+        usuario = session['usuario']
+        return render_template('ingenieria_datos.html', usuario=usuario)
     else:
         flash("⚠️ Debes iniciar sesión para acceder a esta sección.")
         return redirect(url_for('login'))

@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Sentiment Chatbot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <title>Inicio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="usuario-info">
     {% if usuario %}
-        <p>👤 {{ usuario }}</p>
-        <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
+      <p>👤 {{ usuario }}</p>
+      <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
     {% endif %}
-</div>
+  </div>
 
-    <div class="contenedor-principal">
+  <div class="marco-externo">
+    <div class="marco-interno">
+      <div class="contenedor-principal">
         <h1 class="bienvenida">🌐 Bienvenido a Predicción de Sentimientos</h1>
         <p class="intro">Esta plataforma analiza emociones y adapta la experiencia educativa usando inteligencia artificial.</p>
 
-        <!-- ✅ Menú interno (scroll en la misma página) -->
-    <div class="menu-secciones">
-    <a href="{{ url_for('introduccion') }}">📘 Introducción</a>
-    <a href="{{ url_for('objetivos') }}">🎯 Objetivos</a>
-    <a href="{{ url_for('descripcion') }}">🧠 ¿De qué trata el proyecto?</a>
-    <a href="{{ url_for('chat') }}">💬 Acceder al chat</a>
-</div>
+        <div class="menu-secciones">
+          <a href="{{ url_for('introduccion') }}">📘 Introducción</a>
+          <a href="{{ url_for('objetivos') }}">🎯 Objetivos</a>
+          <a href="{{ url_for('descripcion') }}">🧠 ¿De qué trata el proyecto?</a>
+          <a href="{{ url_for('chat') }}">💬 Acceder al chat</a>
+          <a href="{{ url_for('entendimiento_negocio') }}">🔍 Entendimiento del negocio</a>
+          <a href="{{ url_for('ingenieria_datos') }}">🧠 Ingeniería de datos</a>
+        </div>
+
         <section id="introduccion">
-            <h2>📘 Introducción</h2>
-            <p>Esta plataforma busca crear una experiencia educativa personalizada mediante el análisis de sentimientos en tiempo real.</p>
+          <h2>📘 Introducción</h2>
+          <p>Esta plataforma busca crear una experiencia educativa personalizada mediante el análisis de sentimientos en tiempo real.</p>
         </section>
 
         <section id="objetivos">
-            <h2>🎯 Objetivos</h2>
-            <ul>
-                <li>Detectar emociones en textos usando Machine Learning</li>
-                <li>Analizar sentimientos en comentarios de redes sociales</li>
-                <li>Brindar retroalimentación en tiempo real a los TCU</li>
-            </ul>
+          <h2>🎯 Objetivos</h2>
+          <ul>
+            <li>Detectar emociones en textos usando Machine Learning</li>
+            <li>Analizar sentimientos en comentarios de redes sociales</li>
+            <li>Brindar retroalimentación en tiempo real a los TCU</li>
+          </ul>
         </section>
 
         <section id="descripcion">
-            <h2>🧠 ¿De qué trata el proyecto?</h2>
-            <p>El proyecto permite que los usuarios interactúen con un chatbot que analiza sus emociones y responde con contenido adaptado. Se integran medios interactivos como videojuegos, redes sociales y charlas educativas.</p>
+          <h2>🧠 ¿De qué trata el proyecto?</h2>
+          <p>El proyecto permite que los usuarios interactúen con un chatbot que analiza sus emociones y responde con contenido adaptado. Se integran medios interactivos como videojuegos, redes sociales y charlas educativas.</p>
         </section>
+      </div>
     </div>
+  </div>
 </body>
 </html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ingeniería de datos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="usuario-info">
+    {% if usuario %}
+      <p>👤 {{ usuario }}</p>
+      <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
+    {% endif %}
+  </div>
+
+  <div class="marco-externo">
+    <div class="marco-interno">
+      <h2>🧠 Ingeniería de datos</h2>
+      <p>Una vez comprendido el negocio, se exploran los datos disponibles. Esta sección combina análisis técnico con sensibilidad hacia lo que los datos representan.</p>
+
+      <h3>📊 Actividades principales</h3>
+      <ul>
+        <li>Recolección de fuentes de datos internas y externas</li>
+        <li>Evaluación de calidad, completitud y relevancia</li>
+        <li>Tratamiento de datos faltantes, duplicados o inconsistentes</li>
+        <li>Transformación de variables para facilitar el análisis</li>
+        <li>Diseño de estructuras de datos</li>
+      </ul>
+
+      <h3>🔍 Preguntas guía</h3>
+      <ul>
+        <li>¿Qué datos tenemos disponibles?</li>
+        <li>¿Qué datos necesitamos recolectar?</li>
+        <li>¿Qué tan confiables y actualizados son?</li>
+      </ul>
+
+      <p>Esta fase prepara el terreno para el modelado, asegurando que los datos sean útiles, limpios y emocionalmente respetuosos con las personas que representan.</p>
+    </div>
+  </div>
+</body>
+</html>
