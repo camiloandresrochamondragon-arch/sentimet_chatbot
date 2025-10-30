@@ -1,27 +1,192 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Chatbot de Sentimientos</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <title>Heustonn Chatbot Emocional</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='heustonn-css/css/style.css') }}">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a192f, #112240, #020c1b);
+      color: #e0e0e0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chat-container {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 25px;
+      width: 450px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00b894;
+    }
+
+    #chat-box {
+      background: rgba(0,0,0,0.3);
+      border-radius: 15px;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .user {
+      text-align: right;
+      color: #74b9ff;
+      margin: 5px 0;
+      word-wrap: break-word;
+    }
+
+    .bot {
+      text-align: left;
+      color: #55efc4;
+      margin: 5px 0;
+      word-wrap: break-word;
+    }
+
+    input[type="text"] {
+      width: 73%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      margin-right: 5px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #00b894;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #019874;
+    }
+
+    .logout {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .logout a {
+      color: #ff7675;
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .logout a:hover {
+      color: #fab1a0;
+    }
+  </style>
 </head>
 <body>
-    <div class="usuario-info">
-        {% if usuario %}
-            <p>👤 {{ usuario }}</p>
-            <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
-        {% endif %}
-    </div>
+  {% if not usuario %}
+  <script>
+    window.location.href = "{{ url_for('login') }}";
+  </script>
+  {% endif %}
 
-    <div class="contenedor-principal">
-        <h1 class="bienvenida">💬 Chatbot de Sentimientos</h1>
-        <p class="intro">Aquí estará el menú para acceder al chatbot que analiza tus emociones y adapta la experiencia educativa.</p>
-
-        <!-- Puedes agregar aquí el formulario o botón para iniciar el chat -->
-        <div class="menu-chat">
-            <a href="#" class="boton-chat">Iniciar conversación</a>
-            <!-- O reemplaza "#" por la ruta real si tienes un endpoint como /procesar_chat -->
-        </div>
+  <div class="chat-container">
+    <div class="logout">
+      <a href="{{ url_for('logout') }}">🚪 Cerrar sesión</a>
     </div>
+    <h2>🤖 Bienvenido, {{ usuario }} | Heustonn Chatbot</h2>
+
+    <div id="chat-box"></div>
+
+    <div>
+      <input type="text" id="user-input" placeholder="Escribe tu respuesta..." autocomplete="off">
+      <button id="enviar-btn">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    // === CHATBOT INTERACTIVO DE PREGUNTAS ===
+    const preguntas = [
+      {key:'emocion', text:'¿Cómo te sientes hoy? (feliz, triste, estresado...)'},
+      {key:'motivo', text:'¿Por qué te sientes así?'},
+      {key:'influencia_entorno', text:'Del 1 al 5, ¿qué tanto influye tu entorno?'},
+      {key:'frecuencia', text:'¿Con qué frecuencia ocurre esto?'},
+      {key:'concentracion', text:'¿Cómo está tu concentración? (baja, media, alta)'},
+      {key:'energia', text:'Del 1 al 5, ¿qué nivel de energía tienes hoy?'},
+      {key:'sueno', text:'¿Duermes bien últimamente? (sí/no)'}
+    ];
+
+    let paso = 0;
+    let respuestas = {};
+
+    function mostrarMensaje(mensaje, clase) {
+      const chat = document.getElementById('chat-box');
+      const div = document.createElement('div');
+      div.className = clase;
+      div.innerText = mensaje;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function siguientePregunta() {
+      const input = document.getElementById('user-input');
+      const respuesta = input.value.trim();
+      if (!respuesta) return;
+
+      mostrarMensaje("Tú: " + respuesta, 'user');
+      respuestas[preguntas[paso].key] = respuesta;
+      input.value = '';
+      paso++;
+
+      if (paso < preguntas.length) {
+        setTimeout(() => mostrarMensaje(preguntas[paso].text, 'bot'), 600);
+      } else {
+        mostrarMensaje("🧠 Analizando tus respuestas...", 'bot');
+        enviarDatos();
+      }
+    }
+
+    function enviarDatos() {
+      fetch("{{ url_for('procesar_chat') }}", {
+        method: "POST",
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(respuestas)
+      })
+      .then(r => {
+        if (!r.ok) throw new Error("Error de conexión");
+        return r.json();
+      })
+      .then(d => {
+        mostrarMensaje(`Resultado: ${d.resultado}`, 'bot');
+        mostrarMensaje(`💡 Recomendación: ${d.recomendacion}`, 'bot');
+      })
+      .catch(() => {
+        mostrarMensaje("⚠️ Error al conectar con el servidor.", 'bot');
+      });
+    }
+
+    document.getElementById('enviar-btn').addEventListener('click', siguientePregunta);
+
+    document.getElementById('user-input').addEventListener('keypress', e => {
+      if (e.key === 'Enter') siguientePregunta();
+    });
+
+    // Mostrar la primera pregunta automáticamente
+    window.onload = () => mostrarMensaje(preguntas[paso].text, 'bot');
+  </script>
 </body>
 </html>
+

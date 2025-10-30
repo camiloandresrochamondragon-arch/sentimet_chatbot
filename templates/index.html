@@ -1,53 +1,239 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Inicio</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Meta -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Heustonn AI - Predicción de Sentimientos</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='heustonn-css/css/bootstrap.css') }}">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,700|Roboto:400,700&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='heustonn-css/css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='heustonn-css/css/responsive.css') }}">
 </head>
+
 <body>
-  <div class="usuario-info">
-    {% if usuario %}
-      <p>👤 {{ usuario }}</p>
-      <a href="{{ url_for('logout') }}" class="cerrar-sesion">Cerrar sesión</a>
-    {% endif %}
-  </div>
+  <!-- ======= HEADER ======= -->
+  <header class="header_section">
+    <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg custom_nav-container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+          <span>Heustonn AI</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-  <div class="marco-externo">
-    <div class="marco-interno">
-      <div class="contenedor-principal">
-        <h1 class="bienvenida">🌐 Bienvenido a Predicción de Sentimientos</h1>
-        <p class="intro">Esta plataforma analiza emociones y adapta la experiencia educativa usando inteligencia artificial.</p>
-
-        <div class="menu-secciones">
-          <a href="{{ url_for('introduccion') }}">📘 Introducción</a>
-          <a href="{{ url_for('objetivos') }}">🎯 Objetivos</a>
-          <a href="{{ url_for('descripcion') }}">🧠 ¿De qué trata el proyecto?</a>
-          <a href="{{ url_for('chat') }}">💬 Acceder al chat</a>
-          <a href="{{ url_for('entendimiento_negocio') }}">🔍 Entendimiento del negocio</a>
-          <a href="{{ url_for('ingenieria_datos') }}">🧠 Ingeniería de datos</a>
-        </div>
-
-        <section id="introduccion">
-          <h2>📘 Introducción</h2>
-          <p>Esta plataforma busca crear una experiencia educativa personalizada mediante el análisis de sentimientos en tiempo real.</p>
-        </section>
-
-        <section id="objetivos">
-          <h2>🎯 Objetivos</h2>
-          <ul>
-            <li>Detectar emociones en textos usando Machine Learning</li>
-            <li>Analizar sentimientos en comentarios de redes sociales</li>
-            <li>Brindar retroalimentación en tiempo real a los TCU</li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav m-auto">
+            <li class="nav-item active"><a class="nav-link" href="#inicio">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="#introduccion">Introducción</a></li>
+            <li class="nav-item"><a class="nav-link" href="#objetivos">Objetivos</a></li>
+            <li class="nav-item"><a class="nav-link" href="#metodologia">Metodología</a></li>
+            <li class="nav-item"><a class="nav-link" href="#logistica">Regresión Logística</a></li>
+            <li class="nav-item"><a class="nav-link" href="#almacenamiento">Datos</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('chat') }}">Chat</a></li>
           </ul>
-        </section>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-        <section id="descripcion">
-          <h2>🧠 ¿De qué trata el proyecto?</h2>
-          <p>El proyecto permite que los usuarios interactúen con un chatbot que analiza sus emociones y responde con contenido adaptado. Se integran medios interactivos como videojuegos, redes sociales y charlas educativas.</p>
-        </section>
+  <!-- ======= HERO ======= -->
+  <section id="inicio" class="slider_section position-relative">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="slider_item-box layout_padding2">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <div class="img-box">
+                  <img src="{{ url_for('static', filename='heustonn-css/images/slider-img.jpg') }}" alt="Chatbot IA" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="detail-box">
+                  <h1>Heustonn AI <br><span>Predicción de Sentimientos</span></h1>
+                  <p>Una plataforma educativa y emocional impulsada por inteligencia artificial. Analiza texto, detecta emociones y aprende de las interacciones humanas.</p>
+                  <a href="{{ url_for('chat') }}" class="btn btn-primary mt-3">💬 Iniciar Chatbot</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= INTRODUCCIÓN ======= -->
+  <section id="introduccion" class="about_section layout_padding">
+    <div class="container text-center">
+      <div class="custom_heading-container">
+        <h3>📘 Introducción</h3>
+      </div>
+      <p>
+        El análisis de sentimientos permite comprender emociones humanas expresadas en texto.
+        En este proyecto, se integra un chatbot capaz de analizar mensajes y clasificar su tono emocional
+        mediante algoritmos de Machine Learning, como la regresión logística.
+      </p>
+      <div class="img-box mt-4">
+        <img src="{{ url_for('static', filename='heustonn-css/images/about-img.jpg') }}" alt="Predicción de Sentimientos">
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= OBJETIVOS ======= -->
+  <section id="objetivos" class="layout_padding-bottom bg-light">
+    <div class="container text-center">
+      <div class="custom_heading-container">
+        <h3>🎯 Objetivos</h3>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="info-card">
+            <i class="bi bi-emoji-smile"></i>
+            <h5>Identificar emociones</h5>
+            <p>Analizar textos para clasificar emociones como alegría, tristeza, enojo o sorpresa.</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="info-card">
+            <i class="bi bi-graph-up-arrow"></i>
+            <h5>Aplicar Machine Learning</h5>
+            <p>Usar modelos supervisados como regresión logística para aprender patrones de sentimientos.</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="info-card">
+            <i class="bi bi-cloud-arrow-down"></i>
+            <h5>Almacenar y retroalimentar</h5>
+            <p>Guardar las conversaciones en una base de datos para mejorar el modelo con el tiempo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= METODOLOGÍA ======= -->
+  <section id="metodologia" class="layout_padding">
+    <div class="container">
+      <div class="custom_heading-container text-center">
+        <h3>⚙️ Metodología del Proyecto</h3>
+      </div>
+      <p class="text-center mb-4">
+        El desarrollo sigue la metodología CRISP-DM (Cross Industry Standard Process for Data Mining):
+      </p>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="method-box">
+            <h5>1️⃣ Entendimiento del negocio</h5>
+            <p>Definir cómo el chatbot aportará valor al análisis emocional dentro del contexto educativo.</p>
+          </div>
+          <div class="method-box">
+            <h5>2️⃣ Entendimiento de los datos</h5>
+            <p>Recolectar y limpiar datos textuales desde redes sociales o encuestas para el entrenamiento.</p>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="method-box">
+            <h5>3️⃣ Modelado</h5>
+            <p>Entrenar un modelo de regresión logística que aprenda a predecir emociones a partir del texto.</p>
+          </div>
+          <div class="method-box">
+            <h5>4️⃣ Evaluación y despliegue</h5>
+            <p>Validar el rendimiento del modelo, desplegarlo en la web y monitorear sus predicciones.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= REGRESIÓN LOGÍSTICA ======= -->
+<section id="logistica" class="layout_padding bg-light">
+  <div class="container text-center">
+    <div class="custom_heading-container">
+      <h3>📊 Regresión Logística en Machine Learning</h3>
+    </div>
+    <p>
+      La regresión logística es un algoritmo supervisado utilizado para clasificar sentimientos positivos o negativos.
+      Transforma las palabras en vectores numéricos (TF-IDF o embeddings) y aprende una frontera que separa las emociones.
+    </p>
+
+    <div class="row mt-4 align-items-center">
+      <!-- Imagen curva logística -->
+      <div class="col-md-6">
+       <object data="{{ url_for('static', filename='heustonn-css/images/logistic-curve.svg') }}"
+        type="image/svg+xml"
+        class="img-fluid rounded shadow w-100"
+        style="max-height: 350px;">
+  <img src="{{ url_for('static', filename='heustonn-css/images/logistic-curve.png') }}"
+       alt="Curva Logística" class="img-fluid rounded shadow">
+</object>
+
+        <p class="mt-2 text-muted" style="font-style: italic; font-size: 0.9rem;">
+          Figura 1. Curva sigmoide utilizada en la regresión logística para modelar probabilidades.
+        </p>
+      </div>
+
+      <!-- Lista explicativa -->
+      <div class="col-md-6 text-left">
+        <ul class="list-unstyled mt-3">
+          <li>✅ <strong>Entrada:</strong> texto del usuario (frases, comentarios, mensajes).</li>
+          <li>✅ <strong>Procesamiento:</strong> limpieza, tokenización y vectorización.</li>
+          <li>✅ <strong>Salida:</strong> etiqueta de sentimiento (positivo, neutro o negativo).</li>
+        </ul>
       </div>
     </div>
   </div>
+</section>
+
+  <!-- ======= ALMACENAMIENTO ======= -->
+  <section id="almacenamiento" class="layout_padding">
+    <div class="container text-center">
+      <div class="custom_heading-container">
+        <h3>💾 Almacenamiento y Gestión de Datos</h3>
+      </div>
+      <p>Todos los mensajes procesados por el chatbot se almacenan en una base de datos MySQL para su análisis posterior.</p>
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="data-box">
+            <i class="bi bi-database-fill"></i>
+            <h5>Base de datos</h5>
+            <p>Los datos son almacenados en tablas estructuradas que registran usuario, mensaje y predicción emocional.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="data-box">
+            <i class="bi bi-bar-chart-line-fill"></i>
+            <h5>Análisis</h5>
+            <p>Los registros se procesan para generar reportes estadísticos de emociones detectadas.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="data-box">
+            <i class="bi bi-shield-lock-fill"></i>
+            <h5>Seguridad</h5>
+            <p>La información se guarda de forma segura para proteger la privacidad de los usuarios.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="container-fluid footer_section text-center">
+    <p>© 2025 <strong>Heustonn AI</strong> | Predicción de Sentimientos con Inteligencia Artificial</p>
+  </footer>
+
+  <!-- JS -->
+  <script src="{{ url_for('static', filename='heustonn-css/js/jquery-3.4.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='heustonn-css/js/bootstrap.js') }}"></script>
 </body>
 </html>

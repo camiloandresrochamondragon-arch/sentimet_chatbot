@@ -1,40 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Iniciar sesión</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a192f, #112240);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 320px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background-color: #00b894;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #019874;
+        }
+
+        .error {
+            color: #ff6b6b;
+            margin-top: 10px;
+        }
+
+        .flash {
+            background-color: rgba(255, 99, 71, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-  <div class="marco-externo">
-    <div class="marco-interno">
-      <form class="tarjeta-modulo" action="{{ url_for('login') }}" method="POST">
-        <h1 class="bienvenida">Bienvenido a Predicción de Sentimientos</h1>
-        <h2>Iniciar sesión</h2>
-
+    <div class="login-box">
+        <h2>🔐 Iniciar Sesión</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Usuario" required><br>
+            <input type="password" name="password" placeholder="Contraseña" required><br>
+            <button type="submit">Entrar</button>
+        </form>
         {% with messages = get_flashed_messages() %}
           {% if messages %}
-            <ul class="flash-messages">
-              {% for message in messages %}
-                {% if "cerrado sesión" not in message %}
-                  <li>{{ message }}</li>
-                {% endif %}
+            <div class="flash">
+              {% for msg in messages %}
+                <p>{{ msg }}</p>
               {% endfor %}
-            </ul>
+            </div>
           {% endif %}
         {% endwith %}
-
-        <label for="username">Usuario:</label>
-        <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
-
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-
-        <button type="submit">Entrar</button>
-
-        <p>¿No tienes cuenta? <a href="{{ url_for('register') }}">Regístrate aquí</a></p>
-      </form>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
     </div>
-  </div>
 </body>
 </html>

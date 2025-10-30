@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Emocional - Sentiment Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom right, #fef6f9, #e0f7fa);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .usuario-info {
+            text-align: right;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .contenedor-principal {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffffcc;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.3em;
+            color: #6a1b9a;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #00838f;
+            margin-top: 25px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 15px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background-color: #f3e5f5;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+
+        a.boton {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 25px;
+            background-color: #ba68c8;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        a.boton:hover {
+            background-color: #9c27b0;
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .boton-chat {
+            background-color: #26a69a;
+        }
+
+        .boton-chat:hover {
+            background-color: #00796b;
+        }
+    </style>
+</head>
+<body>
+    <div class="usuario-info">
+        {% if usuario %}
+            <p>👤 Bienvenido, {{ usuario }}</p>
+        {% endif %}
+    </div>
+
+    <div class="contenedor-principal">
+        <div class="emoji">🤖💬</div>
+        <h1>Chat Emocional - Sentiment Chatbot</h1>
+        <p>Este espacio ha sido diseñado para acompañarte emocionalmente. A través de una conversación sencilla,
+           nuestro chatbot analizará tus respuestas y te brindará una orientación personalizada según tu estado de ánimo.</p>
+
+        <h2>🧠 ¿Cómo funciona?</h2>
+        <ul>
+            <li>💭 Responde preguntas sobre cómo te sientes, qué te preocupa o qué te motiva.</li>
+            <li>🤖 El chatbot procesará tus palabras mediante un modelo de inteligencia artificial.</li>
+            <li>💡 Recibirás un breve análisis del sentimiento (positivo, negativo o neutro).</li>
+            <li>🌱 Finalmente, obtendrás una recomendación para mejorar o mantener tu bienestar.</li>
+        </ul>
+
+        <h2>🚀 ¿Cómo usarlo correctamente?</h2>
+        <ul>
+            <li>✍️ Sé natural al escribir, como si hablaras con alguien de confianza.</li>
+            <li>😌 Puedes contar cómo te sientes hoy o qué ha pasado en tu día.</li>
+            <li>🕊️ No te preocupes por errores ortográficos; el sistema entiende el contexto.</li>
+        </ul>
+
+        <h2>🎯 ¿Qué lograrás con este chat?</h2>
+        <ul>
+            <li>🧭 Reconocer tus emociones y entender su causa.</li>
+            <li>💬 Recibir apoyo textual inmediato.</li>
+            <li>🌻 Fomentar tu bienestar emocional a través de reflexión y acompañamiento.</li>
+        </ul>
+
+        <!-- Botones de navegación -->
+        <a href="{{ url_for('principal') }}" class="boton">⬅️ Volver al inicio</a>
+        <a href="{{ url_for('chat') }}" class="boton boton-chat">💬 Iniciar conversación</a>
+    </div>
+</body>
+</html>
