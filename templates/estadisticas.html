@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center text-primary">📊 Estadísticas de tus emociones</h2>
+  <p class="text-center text-muted">Visualiza cómo han variado tus estados emocionales.</p>
+
+  {% if etiquetas and valores %}
+  <div class="card shadow p-4 mt-4">
+    <canvas id="emocionesChart"></canvas>
+  </div>
+  {% else %}
+  <div class="alert alert-warning text-center mt-4">
+    ⚠️ Aún no hay suficientes datos para mostrar estadísticas.
+  </div>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('principal') }}" class="btn btn-outline-primary">🏠 Volver al inicio</a>
+    <a href="{{ url_for('estadisticas_ml') }}" class="btn btn-primary ms-2">🤖 Ver análisis ML</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  {% if etiquetas and valores %}
+  const ctx = document.getElementById('emocionesChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: {{ etiquetas | tojson }},
+      datasets: [{
+        data: {{ valores | tojson }},
+        backgroundColor: ['#64b5f6', '#81c784', '#ffb74d', '#e57373', '#ba68c8'],
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        title: { display: true, text: 'Distribución de emociones detectadas' }
+      }
+    }
+  });
+  {% endif %}
+</script>
+{% endblock %}

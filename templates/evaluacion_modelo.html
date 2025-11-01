@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 text-center">
+  <h2 class="text-primary mb-3">📈 Evaluación del Modelo de Machine Learning</h2>
+  <p class="text-muted">Análisis de la precisión y visualización de la matriz de confusión basada en tus respuestas.</p>
+
+  {% if mensaje %}
+  <div class="alert alert-warning mt-4">{{ mensaje }}</div>
+  {% else %}
+  <div class="d-flex justify-content-center mt-4">
+    <div class="card shadow-lg p-3" style="max-width: 650px; background-color: #f8f9fa;">
+      <img src="data:image/png;base64,{{ imagen_base64 }}" 
+           alt="Matriz de Confusión" 
+           class="img-fluid rounded"
+           style="max-height: 500px; object-fit: contain;">
+    </div>
+  </div>
+
+  <p class="mt-4 fs-5">
+    <strong>🎯 Precisión general del modelo:</strong> 
+    <span class="text-success fw-bold">{{ "%.2f"|format(precision) }}%</span>
+  </p>
+  {% endif %}
+
+  <div class="mt-4">
+    <a href="{{ url_for('estadisticas_ml') }}" class="btn btn-outline-success me-2">🤖 Ver análisis ML</a>
+    <a href="{{ url_for('estadisticas') }}" class="btn btn-outline-primary me-2">📊 Estadísticas generales</a>
+    <a href="{{ url_for('principal') }}" class="btn btn-primary">🏠 Volver al inicio</a>
+  </div>
+</div>
+{% endblock %}

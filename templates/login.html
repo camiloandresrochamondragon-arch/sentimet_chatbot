@@ -2,71 +2,147 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Iniciar Sesión</title>
+    <title>Inicio de Sesión | Sistema de Análisis de Sentimientos</title>
     <style>
         body {
             background: linear-gradient(135deg, #0a192f, #112240);
             font-family: 'Poppins', sans-serif;
-            color: white;
+            color: #eaeaea;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin: 0;
         }
 
         .login-box {
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
+            padding: 40px;
             border-radius: 15px;
             text-align: center;
-            width: 320px;
+            width: 380px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
-        input {
+        h2 {
+            margin-bottom: 10px;
+            color: #00bfa6;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"] {
             width: 90%;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
             margin-bottom: 15px;
             outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #00bfa6;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 90%;
+            margin: 10px auto 20px auto;
+            font-size: 0.9em;
+            color: #c9d1d9;
+            text-align: left;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        .checkbox-container a {
+            color: #00bfa6;
+            text-decoration: none;
+        }
+
+        .checkbox-container a:hover {
+            text-decoration: underline;
         }
 
         button {
             width: 100%;
-            background-color: #00b894;
+            background-color: #00bfa6;
             border: none;
             color: white;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
+            font-size: 1.05em;
+            transition: background 0.3s ease;
         }
 
         button:hover {
-            background-color: #019874;
+            background-color: #009e8b;
+        }
+
+        .register {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .register a {
+            color: #6cb4ee;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register a:hover {
+            text-decoration: underline;
         }
 
         .error {
-            color: #ff6b6b;
+            color: #ff7675;
             margin-top: 10px;
         }
 
         .flash {
-            background-color: rgba(255, 99, 71, 0.2);
+            background-color: rgba(255, 99, 71, 0.15);
             padding: 10px;
             border-radius: 8px;
-            margin-top: 10px;
+            margin-top: 15px;
+            color: #ff9f9f;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
     <div class="login-box">
-        <h2>🔐 Iniciar Sesión</h2>
+        <h2>🔐 Inicio de Sesión</h2>
         <form method="POST">
             <input type="text" name="username" placeholder="Usuario" required><br>
             <input type="password" name="password" placeholder="Contraseña" required><br>
+
+            <div class="checkbox-container">
+                <input type="checkbox" name="aceptar_politicas" required>
+                <label for="aceptar_politicas">
+                    He leído y acepto las 
+                    <a href="{{ url_for('politicas') }}" target="_blank">políticas y términos de uso</a>.
+                </label>
+            </div>
+
             <button type="submit">Entrar</button>
         </form>
+
+        <div class="register">
+            ¿No tienes una cuenta? 
+            <a href="{{ url_for('register') }}">Crear cuenta</a>
+        </div>
+
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <div class="flash">
@@ -76,6 +152,7 @@
             </div>
           {% endif %}
         {% endwith %}
+
         {% if error %}
         <p class="error">{{ error }}</p>
         {% endif %}

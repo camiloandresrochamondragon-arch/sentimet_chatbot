@@ -13,6 +13,7 @@
             padding: 0;
         }
 
+        /* === INFO DEL USUARIO === */
         .usuario-info {
             text-align: right;
             padding: 10px 20px;
@@ -20,6 +21,41 @@
             color: #555;
         }
 
+        .usuario-info p {
+            margin: 5px 0;
+        }
+
+        .botones-usuario {
+            margin-top: 5px;
+        }
+
+        .botones-usuario a {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 6px 12px;
+            font-size: 0.9em;
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .boton-inicio {
+            background-color: #7b1fa2;
+        }
+        .boton-inicio:hover {
+            background-color: #4a0072;
+        }
+
+        .boton-cerrar {
+            background-color: #e53935;
+        }
+        .boton-cerrar:hover {
+            background-color: #b71c1c;
+        }
+
+        /* === CONTENEDOR PRINCIPAL === */
         .contenedor-principal {
             max-width: 800px;
             margin: 40px auto;
@@ -59,48 +95,62 @@
             font-size: 1.1em;
         }
 
+        /* ===== BOTONES PRINCIPALES ===== */
         a.boton {
             display: inline-block;
-            margin-top: 25px;
+            margin: 12px 10px;
             padding: 12px 25px;
-            background-color: #ba68c8;
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-size: 1.1em;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
 
-        a.boton:hover {
-            background-color: #9c27b0;
-        }
+        /* === COLORES DE BOTONES === */
+        .boton-volver { background-color: #ab47bc; }
+        .boton-volver:hover { background-color: #8e24aa; }
+
+        .boton-chat { background-color: #26a69a; }
+        .boton-chat:hover { background-color: #00796b; }
+
+        .boton-estadisticas { background-color: #4caf50; }
+        .boton-estadisticas:hover { background-color: #2e7d32; }
+
+        .boton-ml { background-color: #1e88e5; }
+        .boton-ml:hover { background-color: #0d47a1; }
+
+        .boton-evaluacion { background-color: #ffb300; }
+        .boton-evaluacion:hover { background-color: #f57c00; }
 
         .emoji {
             font-size: 3em;
             margin-bottom: 10px;
         }
-
-        .boton-chat {
-            background-color: #26a69a;
-        }
-
-        .boton-chat:hover {
-            background-color: #00796b;
-        }
     </style>
 </head>
 <body>
+    <!-- ==== SECCIÓN DE USUARIO ==== -->
     <div class="usuario-info">
         {% if usuario %}
             <p>👤 Bienvenido, {{ usuario }}</p>
+            <div class="botones-usuario">
+                <a href="{{ url_for('login') }}" class="boton-inicio">🏠 Inicio</a>
+                <a href="{{ url_for('logout') }}" class="boton-cerrar">🚪 Cerrar sesión</a>
+            </div>
         {% endif %}
     </div>
 
+    <!-- ==== CONTENIDO PRINCIPAL ==== -->
     <div class="contenedor-principal">
         <div class="emoji">🤖💬</div>
         <h1>Chat Emocional - Sentiment Chatbot</h1>
-        <p>Este espacio ha sido diseñado para acompañarte emocionalmente. A través de una conversación sencilla,
-           nuestro chatbot analizará tus respuestas y te brindará una orientación personalizada según tu estado de ánimo.</p>
+        <p>
+            Este espacio ha sido diseñado para acompañarte emocionalmente. A través de una conversación sencilla,
+            nuestro chatbot analizará tus respuestas y te brindará una orientación personalizada según tu estado de ánimo.
+        </p>
 
         <h2>🧠 ¿Cómo funciona?</h2>
         <ul>
@@ -124,9 +174,12 @@
             <li>🌻 Fomentar tu bienestar emocional a través de reflexión y acompañamiento.</li>
         </ul>
 
-        <!-- Botones de navegación -->
-        <a href="{{ url_for('principal') }}" class="boton">⬅️ Volver al inicio</a>
+        <!-- ===== BOTONES ===== -->
+        <a href="{{ url_for('principal') }}" class="boton boton-volver">⬅️ Volver al inicio</a>
         <a href="{{ url_for('chat') }}" class="boton boton-chat">💬 Iniciar conversación</a>
+        <a href="{{ url_for('estadisticas') }}" class="boton boton-estadisticas">📊 Ver estadísticas</a>
+        <a href="{{ url_for('estadisticas_ml') }}" class="boton boton-ml">📈 Ver análisis de Machine Learning</a>
+        <a href="{{ url_for('evaluacion_modelo') }}" class="boton boton-evaluacion">🧩 Evaluación del modelo</a>
     </div>
 </body>
 </html>

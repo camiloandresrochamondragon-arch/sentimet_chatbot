@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center text-success">🤖 Análisis del Modelo de Machine Learning</h2>
+  <p class="text-center text-muted">Comparación entre emociones reportadas y predichas por el modelo.</p>
+
+  {% if etiquetas and reales and predichas %}
+  <div class="card shadow p-4 mt-4">
+    <canvas id="comparacionChart"></canvas>
+  </div>
+  {% else %}
+  <div class="alert alert-warning text-center mt-4">
+    ⚠️ No hay suficientes datos para generar el análisis ML.
+  </div>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('evaluacion_modelo') }}" class="btn btn-outline-success">📈 Ver matriz de confusión</a>
+    <a href="{{ url_for('estadisticas') }}" class="btn btn-outline-primary ms-2">📊 Ver estadísticas generales</a>
+    <a href="{{ url_for('principal') }}" class="btn btn-primary ms-2">🏠 Volver al inicio</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  {% if etiquetas and reales and predichas %}
+  const ctx = document.getElementById('comparacionChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ etiquetas | tojson }},
+      datasets: [
+        {
+          label: 'Emociones Reportadas',
+          data: {{ reales | tojson }},
+          backgroundColor: '#64b5f6'
+        },
+        {
+          label: 'Predicciones del Modelo',
+          data: {{ predichas | tojson }},
+          backgroundColor: '#81c784'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: 'Cantidad' } }
+      },
+      plugins: {
+        legend: { position: 'bottom' },
+        title: { display: true, text: 'Comparativa entre emociones reales y predichas' }
+      }
+    }
+  });
+  {% endif %}
+</script>
+{% endblock %}
