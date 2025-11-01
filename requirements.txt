@@ -1,6 +1,6 @@
 Flask==2.3.3
-mysql-connector-python==8.1.0
-scikit-learn==1.7.2
-pandas==2.3.3
-numpy==2.3.4
-gunicorn==20.1.0
+Flask-Session
+psycopg2-binary
+sqlalchemy
+scikit-learn
+numpy

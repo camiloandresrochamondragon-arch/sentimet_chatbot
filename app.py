@@ -1,31 +1,47 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-import mysql.connector
+import psycopg2
+import psycopg2.extras
 import pickle
 import os
 from functools import wraps
 
+# ========================
+# CONFIGURACIÓN GENERAL
+# ========================
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta'
 
-# ========================
-#   CONFIGURACIÓN GENERAL
-# ========================
+# 🔑 Clave secreta estable y segura (NO debe cambiar cada vez que se ejecute)
+app.secret_key = os.getenv("SECRET_KEY", "clave_super_segura_y_constante")
+
+# Configuración de sesiones (evita que se pierdan al navegar)
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hora
+app.config['SESSION_COOKIE_SECURE'] = False  # True solo en producción con HTTPS
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+# Carpetas
 app.static_folder = 'static'
 app.template_folder = 'templates'
 
-# Conexión a MySQL
-DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',  # agrega tu contraseña si la tienes
-    'database': 'chatbot'
-}
-
+# ========================
+# FUNCIÓN DE CONEXIÓN A POSTGRESQL
+# ========================
 def get_db_connection():
-    return mysql.connector.connect(**DB_CONFIG)
+    try:
+        conn = psycopg2.connect(
+            host="dpg-d42mb0q4d50c739s5u30-a.oregon-postgres.render.com",
+            database="chatbot_de_sentimet",
+            user="chatbot_de_sentimet_user",
+            password="NofcaUnhWwJPl2V2Md9dC4WojRbdWnrl",
+            port="5432"
+        )
+        return conn
+    except Exception as e:
+        print("❌ Error al conectar a PostgreSQL:", e)
+        return None
 
 # ========================
-#   DECORADOR LOGIN REQUERIDO
+# DECORADOR LOGIN REQUERIDO
 # ========================
 def login_requerido(f):
     @wraps(f)
@@ -37,9 +53,13 @@ def login_requerido(f):
     return verificar
 
 # ========================
-#   PÁGINAS PÚBLICAS
+# PÁGINAS PÚBLICAS
 # ========================
 @app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/home')
 def home():
     return render_template('index.html')
 
@@ -60,7 +80,7 @@ def politicas():
     return render_template('politicas.html')
 
 # ========================
-#   CARGAR MODELO DE IA
+# CARGAR MODELO DE IA
 # ========================
 MODEL_PATH = os.path.join('models', 'modelo_logistico.pkl')
 VEC_PATH = os.path.join('models', 'vectorizador.pkl')
@@ -78,12 +98,15 @@ else:
     print("⚠️ No se encontraron modelo/vectorizador. El chatbot funcionará en modo básico.")
 
 # ========================
-#   REGISTRO DE USUARIOS
+# REGISTRO DE USUARIOS
 # ========================
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     conn = get_db_connection()
-    cur = conn.cursor(dictionary=True)
+    if not conn:
+        flash("❌ Error de conexión a la base de datos.")
+        return redirect(url_for('register'))
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     if request.method == 'POST':
         username = request.form['username']
@@ -95,11 +118,17 @@ def register():
 
         if existing_user:
             flash("⚠️ El usuario o correo ya está registrado.")
+            cur.close()
+            conn.close()
             return redirect(url_for('register'))
 
-        cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
-                    (username, email, password))
+        cur.execute("""
+            INSERT INTO users (username, email, password)
+            VALUES (%s, %s, %s)
+        """, (username, email, password))
         conn.commit()
+        cur.close()
+        conn.close()
         flash("🎈 ¡Registro exitoso! Ahora puedes iniciar sesión.")
         return redirect(url_for('login'))
 
@@ -108,12 +137,15 @@ def register():
     return render_template('register.html')
 
 # ========================
-#   LOGIN / LOGOUT
+# LOGIN / LOGOUT
 # ========================
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     conn = get_db_connection()
-    cur = conn.cursor(dictionary=True)
+    if not conn:
+        flash("❌ Error de conexión a la base de datos.")
+        return redirect(url_for('login'))
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     if request.method == 'POST':
         username = request.form['username']
@@ -124,10 +156,15 @@ def login():
 
         if user:
             session['usuario'] = username
+            session.permanent = True  # 🔒 Mantiene la sesión activa
             flash(f"🎉 Bienvenido, {username}.")
+            cur.close()
+            conn.close()
             return redirect(url_for('principal'))
         else:
             flash("⚠️ Usuario o contraseña incorrectos.")
+            cur.close()
+            conn.close()
             return redirect(url_for('login'))
 
     cur.close()
@@ -138,10 +175,10 @@ def login():
 def logout():
     session.pop('usuario', None)
     flash("👋 Has cerrado sesión.")
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 # ========================
-#   SECCIONES PROTEGIDAS
+# SECCIONES PROTEGIDAS
 # ========================
 @app.route('/principal')
 @login_requerido
@@ -149,13 +186,13 @@ def principal():
     return render_template('principal.html', usuario=session['usuario'])
 
 # ========================
-#   📊 ESTADÍSTICAS DE EMOCIONES
+# 📊 ESTADÍSTICAS DE EMOCIONES
 # ========================
 @app.route('/estadisticas_ml')
 @login_requerido
 def estadisticas_ml():
     conn = get_db_connection()
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         SELECT emocion_reportada, resultado_ml
         FROM respuestas_chat
@@ -170,7 +207,6 @@ def estadisticas_ml():
     if not datos:
         return render_template("estadisticas_ml.html", etiquetas=None, reales=None, predichas=None)
 
-    # Contar frecuencia de emociones reales y predichas
     from collections import Counter
     reales = Counter([d['emocion_reportada'].lower() for d in datos])
     predichas = Counter([d['resultado_ml'].lower() for d in datos])
@@ -184,13 +220,11 @@ def estadisticas_ml():
                            reales=reales_valores,
                            predichas=predichas_valores)
 
-
 @app.route('/estadisticas')
 @login_requerido
 def estadisticas():
     conn = get_db_connection()
-    cur = conn.cursor(dictionary=True)
-
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         SELECT resultado_ml, COUNT(*) AS cantidad
         FROM respuestas_chat
@@ -218,7 +252,7 @@ def evaluacion_modelo():
     from sklearn.metrics import confusion_matrix, accuracy_score
 
     conn = get_db_connection()
-    cur = conn.cursor(dictionary=True)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
         SELECT emocion_reportada, resultado_ml
         FROM respuestas_chat
@@ -240,37 +274,23 @@ def evaluacion_modelo():
     matriz = confusion_matrix(reales, predichas, labels=etiquetas)
     precision = accuracy_score(reales, predichas) * 100
 
-    # === 🎨 ESTILO VISUAL MEJORADO ===
     fig, ax = plt.subplots(figsize=(6, 5))
-    im = ax.imshow(matriz, interpolation='nearest', cmap='Blues')
-
-    # Barra de color
-    cbar = ax.figure.colorbar(im, ax=ax)
-    cbar.ax.set_ylabel("Frecuencia", rotation=-90, va="bottom")
-
-    # Etiquetas
-    ax.set(
-        xticks=np.arange(len(etiquetas)),
-        yticks=np.arange(len(etiquetas)),
-        xticklabels=etiquetas,
-        yticklabels=etiquetas,
-        title="Matriz de Confusión (Datos del Usuario)",
-        ylabel="Etiqueta Real",
-        xlabel="Predicción del Modelo"
-    )
-
-    # Rotar etiquetas del eje X
-    plt.setp(ax.get_xticklabels(), rotation=30, ha="right", rotation_mode="anchor")
-
-    # Valores dentro de cada celda
-    thresh = matriz.max() / 2.
+    im = ax.imshow(matriz, interpolation='nearest', cmap='coolwarm')
+    ax.figure.colorbar(im, ax=ax)
+    ax.set(xticks=np.arange(len(etiquetas)),
+           yticks=np.arange(len(etiquetas)),
+           xticklabels=etiquetas,
+           yticklabels=etiquetas,
+           title="Matriz de Confusión (Datos del Usuario)",
+           ylabel="Etiqueta Real",
+           xlabel="Predicción del Modelo")
+    plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
     for i in range(matriz.shape[0]):
         for j in range(matriz.shape[1]):
             ax.text(j, i, format(matriz[i, j], 'd'),
                     ha="center", va="center",
-                    color="white" if matriz[i, j] > thresh else "black")
+                    color="white" if matriz[i, j] > matriz.max()/2 else "black")
 
-    fig.tight_layout()
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
     buffer.seek(0)
@@ -278,14 +298,18 @@ def evaluacion_modelo():
     buffer.close()
     plt.close(fig)
 
-    return render_template("evaluacion_modelo.html", imagen_base64=imagen_base64, precision=precision, mensaje=None)
+    return render_template("evaluacion_modelo.html",
+                           imagen_base64=imagen_base64,
+                           precision=round(precision, 2),
+                           mensaje=None)
 
 # ========================
-#   CHATBOT PRINCIPAL
+# CHATBOT PRINCIPAL
 # ========================
 @app.route('/chat')
+@login_requerido
 def chat():
-    return render_template('chats.html')
+    return render_template('chats.html', usuario=session["usuario"])
 
 @app.route('/procesar_chat', methods=['POST'])
 @login_requerido
@@ -293,37 +317,33 @@ def procesar_chat():
     try:
         data = request.get_json()
         emocion = data.get('emocion', '').lower()
-        motivo = data.get('motivo', '')
-        influencia_entorno = data.get('influencia_entorno', '')
-        frecuencia = data.get('frecuencia', '')
-        concentracion = data.get('concentracion', '')
-        energia = data.get('energia', '')
-        sueno = data.get('sueno', '')
 
-        # === Análisis simple ===
-        if "triste" in emocion or "estres" in emocion or "cansado" in emocion:
-            resultado_ml = "Negativo"
+        # 🧠 Clasificación básica o con modelo IA
+        if modelo and vectorizador:
+            texto_vec = vectorizador.transform([emocion])
+            resultado_ml = modelo.predict(texto_vec)[0]
+        else:
+            if "triste" in emocion or "estres" in emocion or "cansado" in emocion:
+                resultado_ml = "Negativo"
+            elif "feliz" in emocion or "alegre" in emocion or "motivado" in emocion:
+                resultado_ml = "Positivo"
+            else:
+                resultado_ml = "Neutro"
+
+        # 🎯 Recomendaciones simples
+        if resultado_ml == "Negativo":
             recomendacion = "Tómate un descanso y realiza alguna actividad que disfrutes. 💬"
-        elif "feliz" in emocion or "alegre" in emocion or "motivado" in emocion:
-            resultado_ml = "Positivo"
+        elif resultado_ml == "Positivo":
             recomendacion = "Sigue manteniendo esa energía positiva durante el día. 🌞"
         else:
-            resultado_ml = "Neutro"
             recomendacion = "Reflexiona sobre tus emociones para entender mejor tu estado. 🤍"
 
-        # === Guardar en MySQL ===
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO respuestas_chat 
-            (nombre, emocion_reportada, resultado_ml, recomendacion, fecha)
+            INSERT INTO respuestas_chat (nombre, emocion_reportada, resultado_ml, recomendacion, fecha)
             VALUES (%s, %s, %s, %s, NOW())
-        """, (
-            session['usuario'],
-            emocion,
-            resultado_ml,
-            recomendacion
-        ))
+        """, (session['usuario'], emocion, resultado_ml, recomendacion))
         conn.commit()
         cur.close()
         conn.close()
@@ -339,8 +359,9 @@ def procesar_chat():
         print(traceback.format_exc())
         return jsonify({"error": "Error al procesar los datos"}), 500
 
+
 # ========================
-#   EJECUCIÓN DEL SERVIDOR
+# EJECUCIÓN DEL SERVIDOR
 # ========================
 if __name__ == '__main__':
     app.run(debug=True)

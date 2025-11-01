@@ -97,11 +97,6 @@
   </style>
 </head>
 <body>
-  {% if not usuario %}
-  <script>
-    window.location.href = "{{ url_for('login') }}";
-  </script>
-  {% endif %}
 
   <div class="chat-container">
     <div class="logout">
@@ -118,7 +113,7 @@
   </div>
 
   <script>
-    // === CHATBOT INTERACTIVO DE PREGUNTAS ===
+    // === CHATBOT INTERACTIVO ===
     const preguntas = [
       {key:'emocion', text:'¿Cómo te sientes hoy? (feliz, triste, estresado...)'},
       {key:'motivo', text:'¿Por qué te sientes así?'},
@@ -179,7 +174,6 @@
     }
 
     document.getElementById('enviar-btn').addEventListener('click', siguientePregunta);
-
     document.getElementById('user-input').addEventListener('keypress', e => {
       if (e.key === 'Enter') siguientePregunta();
     });
@@ -189,4 +183,3 @@
   </script>
 </body>
 </html>
-
