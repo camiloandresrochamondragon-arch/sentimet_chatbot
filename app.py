@@ -246,11 +246,14 @@ def estadisticas():
 @app.route('/evaluacion_modelo')
 @login_requerido
 def evaluacion_modelo():
+    import matplotlib
+    matplotlib.use('Agg')  # Evita errores en servidores sin GUI
     import matplotlib.pyplot as plt
     import io, base64
     import numpy as np
     from sklearn.metrics import confusion_matrix, accuracy_score
 
+    # Conexión a la base de datos
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("""
@@ -265,32 +268,61 @@ def evaluacion_modelo():
     conn.close()
 
     if not datos:
-        return render_template("evaluacion_modelo.html", imagen_base64=None, mensaje="Aún no hay datos suficientes para generar la matriz.")
+        return render_template(
+            "evaluacion_modelo.html",
+            imagen_base64=None,
+            mensaje="Aún no hay datos suficientes para generar la matriz."
+        )
 
-    reales = [d['emocion_reportada'].lower() for d in datos]
-    predichas = [d['resultado_ml'].lower() for d in datos]
+    # Limpiar datos nulos
+    reales = [d['emocion_reportada'].lower() for d in datos if d['emocion_reportada']]
+    predichas = [d['resultado_ml'].lower() for d in datos if d['resultado_ml']]
+
+    if len(reales) != len(predichas) or len(reales) == 0:
+        return render_template(
+            "evaluacion_modelo.html",
+            imagen_base64=None,
+            mensaje="Error: los datos reales y predichos no coinciden o están vacíos."
+        )
+
+    # Crear lista de etiquetas
     etiquetas = sorted(list(set(reales + predichas)))
 
-    matriz = confusion_matrix(reales, predichas, labels=etiquetas)
-    precision = accuracy_score(reales, predichas) * 100
+    # Intentar generar la matriz de confusión
+    try:
+        matriz = confusion_matrix(reales, predichas, labels=etiquetas)
+        precision = accuracy_score(reales, predichas) * 100
+    except Exception as e:
+        print("Error generando la matriz:", e)
+        return render_template(
+            "evaluacion_modelo.html",
+            imagen_base64=None,
+            mensaje="Error al generar la matriz de confusión."
+        )
 
+    # Crear gráfico
     fig, ax = plt.subplots(figsize=(6, 5))
     im = ax.imshow(matriz, interpolation='nearest', cmap='coolwarm')
     ax.figure.colorbar(im, ax=ax)
-    ax.set(xticks=np.arange(len(etiquetas)),
-           yticks=np.arange(len(etiquetas)),
-           xticklabels=etiquetas,
-           yticklabels=etiquetas,
-           title="Matriz de Confusión (Datos del Usuario)",
-           ylabel="Etiqueta Real",
-           xlabel="Predicción del Modelo")
+    ax.set(
+        xticks=np.arange(len(etiquetas)),
+        yticks=np.arange(len(etiquetas)),
+        xticklabels=etiquetas,
+        yticklabels=etiquetas,
+        title="Matriz de Confusión (Datos del Usuario)",
+        ylabel="Etiqueta Real",
+        xlabel="Predicción del Modelo"
+    )
     plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
     for i in range(matriz.shape[0]):
         for j in range(matriz.shape[1]):
-            ax.text(j, i, format(matriz[i, j], 'd'),
-                    ha="center", va="center",
-                    color="white" if matriz[i, j] > matriz.max()/2 else "black")
+            ax.text(
+                j, i, format(matriz[i, j], 'd'),
+                ha="center", va="center",
+                color="white" if matriz[i, j] > matriz.max()/2 else "black"
+            )
 
+    # Convertir gráfico a base64 para mostrar en HTML
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
     buffer.seek(0)
@@ -298,10 +330,13 @@ def evaluacion_modelo():
     buffer.close()
     plt.close(fig)
 
-    return render_template("evaluacion_modelo.html",
-                           imagen_base64=imagen_base64,
-                           precision=round(precision, 2),
-                           mensaje=None)
+    return render_template(
+        "evaluacion_modelo.html",
+        imagen_base64=imagen_base64,
+        precision=round(precision, 2),
+        mensaje=None
+    )
+
 
 # ========================
 # CHATBOT PRINCIPAL
