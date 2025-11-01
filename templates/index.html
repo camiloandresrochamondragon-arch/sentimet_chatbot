@@ -156,43 +156,42 @@
   </section>
 
   <!-- ======= REGRESIÓN LOGÍSTICA ======= -->
+<!-- ======= REGRESIÓN LOGÍSTICA ======= -->
 <section id="logistica" class="layout_padding bg-light">
   <div class="container text-center">
     <div class="custom_heading-container">
       <h3>📊 Regresión Logística en Machine Learning</h3>
     </div>
     <p>
-      La regresión logística es un algoritmo supervisado utilizado para clasificar sentimientos positivos o negativos.
-      Transforma las palabras en vectores numéricos (TF-IDF o embeddings) y aprende una frontera que separa las emociones.
+      La regresión logística es un algoritmo supervisado utilizado para clasificar emociones como positivas, negativas o neutras.
+      Transforma el texto en vectores numéricos (TF-IDF) y aprende patrones que separan las distintas emociones.
     </p>
 
     <div class="row mt-4 align-items-center">
       <!-- Imagen curva logística -->
       <div class="col-md-6">
-       <object data="{{ url_for('static', filename='heustonn-css/images/logistic-curve.svg') }}"
-        type="image/svg+xml"
-        class="img-fluid rounded shadow w-100"
-        style="max-height: 350px;">
-  <img src="{{ url_for('static', filename='heustonn-css/images/logistic-curve.png') }}"
-       alt="Curva Logística" class="img-fluid rounded shadow">
-</object>
-
+        <img src="{{ url_for('static', filename='heustonn-css/images/logistic-curve.svg') }}"
+             alt="Curva Logística"
+             class="img-fluid rounded shadow w-100"
+             style="max-height: 350px;">
         <p class="mt-2 text-muted" style="font-style: italic; font-size: 0.9rem;">
           Figura 1. Curva sigmoide utilizada en la regresión logística para modelar probabilidades.
         </p>
       </div>
 
-      <!-- Lista explicativa -->
+      <!-- Explicación del proceso -->
       <div class="col-md-6 text-left">
         <ul class="list-unstyled mt-3">
           <li>✅ <strong>Entrada:</strong> texto del usuario (frases, comentarios, mensajes).</li>
-          <li>✅ <strong>Procesamiento:</strong> limpieza, tokenización y vectorización.</li>
-          <li>✅ <strong>Salida:</strong> etiqueta de sentimiento (positivo, neutro o negativo).</li>
+          <li>✅ <strong>Procesamiento:</strong> limpieza, tokenización y vectorización TF-IDF.</li>
+          <li>✅ <strong>Modelo:</strong> regresión logística que clasifica la emoción.</li>
+          <li>✅ <strong>Salida:</strong> etiqueta de sentimiento (Positivo, Neutro, Negativo).</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
+
 
   <!-- ======= ALMACENAMIENTO ======= -->
   <section id="almacenamiento" class="layout_padding">
